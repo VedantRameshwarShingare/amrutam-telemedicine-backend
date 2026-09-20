@@ -26,7 +26,8 @@ class BookingService:
         slot_id: UUID,
         idempotency_key: str,
     ) -> Booking:
-        existing = await self.repository.get_by_idempotency(patient.id, idempotency_key)
+        patient_id = patient.id
+        existing = await self.repository.get_by_idempotency(patient_id, idempotency_key)
         if existing is not None:
             if existing.slot_id != slot_id:
                 raise ConflictError("Idempotency key was already used for another slot")
@@ -49,7 +50,7 @@ class BookingService:
             booking = Booking(
                 slot_id=slot.id,
                 doctor_id=slot.doctor_id,
-                patient_id=patient.id,
+                patient_id=patient_id,
                 status=BookingStatus.CONFIRMED,
                 idempotency_key=idempotency_key,
             )
@@ -61,12 +62,12 @@ class BookingService:
                 {
                     "booking_id": str(booking.id),
                     "slot_id": str(slot.id),
-                    "patient_id": str(patient.id),
+                    "patient_id": str(patient_id),
                     "doctor_id": str(slot.doctor_id),
                 }
             )
             await self.repository.add_audit(
-                actor_user_id=patient.id,
+                actor_user_id=patient_id,
                 event_type="booking.created",
                 entity_type="booking",
                 entity_id=booking.id,
@@ -81,7 +82,7 @@ class BookingService:
             return booking
         except IntegrityError as exc:
             await self.session.rollback()
-            existing = await self.repository.get_by_idempotency(patient.id, idempotency_key)
+            existing = await self.repository.get_by_idempotency(patient_id, idempotency_key)
             if existing is not None:
                 return existing
             raise ConflictError("Availability slot has already been booked") from exc
