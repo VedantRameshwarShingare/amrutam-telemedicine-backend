@@ -103,7 +103,7 @@ jobs:
       - run: pip install ".[dev]"
       - run: bandit -r app -ll
       - run: pip-audit
-      - uses: aquasecurity/trivy-action@0.28.0
+      - uses: aquasecurity/trivy-action@v0.28.0
         with:
           scan-type: fs
           scan-ref: .
