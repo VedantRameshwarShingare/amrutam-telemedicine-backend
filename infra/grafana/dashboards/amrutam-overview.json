@@ -1,0 +1,83 @@
+{
+  "annotations": {"list": []},
+  "editable": false,
+  "panels": [
+    {
+      "datasource": {"type": "prometheus", "uid": "Prometheus"},
+      "fieldConfig": {"defaults": {"unit": "reqps"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "title": "HTTP request rate",
+      "type": "timeseries",
+      "targets": [{"expr": "sum(rate(amrutam_http_requests_total[5m]))", "legendFormat": "requests/sec"}]
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "Prometheus"},
+      "fieldConfig": {"defaults": {"unit": "s"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "id": 2,
+      "title": "HTTP latency p95",
+      "type": "timeseries",
+      "targets": [{"expr": "histogram_quantile(0.95, sum(rate(amrutam_http_request_duration_seconds_bucket[5m])) by (le))", "legendFormat": "p95"}]
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "Prometheus"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "id": 3,
+      "title": "Outbox publishes",
+      "type": "timeseries",
+      "targets": [{"expr": "sum(rate(amrutam_outbox_published_total[5m])) by (event_type)", "legendFormat": "{{event_type}}"}]
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "Prometheus"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "id": 4,
+      "title": "Outbox failures",
+      "type": "timeseries",
+      "targets": [{"expr": "sum(rate(amrutam_outbox_failures_total[5m])) by (event_type)", "legendFormat": "{{event_type}}"}]
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "Prometheus"},
+      "fieldConfig": {"defaults": {"unit": "reqps"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+      "id": 5,
+      "title": "HTTP error rate",
+      "type": "timeseries",
+      "targets": [{"expr": "sum(rate(amrutam_http_errors_total[5m])) by (status)", "legendFormat": "HTTP {{status}}"}]
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "Prometheus"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+      "id": 6,
+      "title": "Outbox backlog",
+      "type": "timeseries",
+      "targets": [{"expr": "amrutam_outbox_backlog", "legendFormat": "unpublished events"}]
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "Prometheus"},
+      "fieldConfig": {"defaults": {"unit": "reqps"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24},
+      "id": 7,
+      "title": "Database error rate",
+      "type": "timeseries",
+      "targets": [{"expr": "sum(rate(amrutam_database_errors_total[5m])) by (operation)", "legendFormat": "{{operation}}"}]
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "Prometheus"},
+      "fieldConfig": {"defaults": {"unit": "reqps"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24},
+      "id": 8,
+      "title": "Celery task failures",
+      "type": "timeseries",
+      "targets": [{"expr": "sum(rate(amrutam_celery_task_failures_total[5m])) by (task)", "legendFormat": "{{task}}"}]
+    }
+  ],
+  "schemaVersion": 39,
+  "title": "Amrutam Telemedicine Overview",
+  "time": {"from": "now-6h", "to": "now"},
+  "timezone": "browser",
+  "version": 1
+}
